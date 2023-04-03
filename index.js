@@ -16,6 +16,30 @@ server.use("*", (req, res, next) => {
   req.send(`<h1>Hello World!</h1>`);
 });
 
+server.get("/api/users", async (req, res) => {
+  const users = await User.findById(req.params.id);
+  res.status(200).json(users);
+});
+
+server.post("/api/register", (req, res) => {
+  const { username, password } = req.body;
+  if (username && password) {
+    User.insert(`username: ${username}, password: ${password}`);
+  }
+  res.json(User);
+});
+
+server.post("/api/login", async (req, res) => {
+  try {
+    const { username, password } = req.body;
+    if (username && password) {
+      res.send(`Hello! ${username}`);
+    }
+  } catch (err) {
+    console.log(err.message);
+  }
+});
+
 server.use((err, req, res, next) => {
   res.status(500).json({
     message: err.message,
